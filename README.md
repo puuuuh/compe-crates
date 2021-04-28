@@ -1,24 +1,20 @@
-A small plugin for building and launching cargo targets through the vimspector. Uses vimspector config, replacing only "executable" parameter.
-
 ## Installation
 
 ### Vundle
 
 ```vim
-Plugin 'puuuuh/vimspector-rust'
+Plugin 'puuuuh/compe-crates'
 ```
 
 ### Packer
 
 ```lua
-use 'puuuuh/vimspector-rust'
+use 'puuuuh/compe-crates'
 ```
 
 ## Dependencies
 * Neovim 0.5 with lua support
-* [Vimspector](https://github.com/puremourning/vimspector)
-
+* nvim-compe
 
 ## Commands
-* :RustDebugTest
-* :RustDebugBuild
+* :CompeCratesUpdate
