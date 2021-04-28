@@ -14,7 +14,7 @@ use 'puuuuh/compe-crates'
 
 ## Configuration
 ```lua
-vim.g.cargo_compe_path = "PATH_FOR_INDEX_FILES"
+vim.g.cargo_compe_path = "PATH_FOR_INDEX_FILES" -- "~/.local/share/cargo-compe/" by default
 
 require'compe'.setup {
   source = {
