@@ -13,7 +13,7 @@ endif
 lua require'compe'.register_source('crates', require'compe-crates')
 lua require'compe-crates':load()
 
-command! CompeCratesUpdate lua require'compe-crates'.force_update()
+command! CompeCratesUpdate lua require'compe-crates':force_update()
 
 let g:loaded_compecrates = 1
 
