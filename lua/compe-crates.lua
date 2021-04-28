@@ -150,7 +150,7 @@ end
 
 --- determine
 Crates.determine = function(_, context)
-    if vim.fn.expand('%:t') ~= "Crates.toml" then
+    if vim.fn.expand('%:t') ~= "Cargo.toml" then
         return
     end
     local res = compe.helper.determine(context, {
