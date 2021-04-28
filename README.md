@@ -12,6 +12,18 @@ Plugin 'puuuuh/compe-crates'
 use 'puuuuh/compe-crates'
 ```
 
+## Configuration
+```lua
+vim.g.cargo_compe_path = "PATH_FOR_INDEX_FILES"
+
+require'compe'.setup {
+  source = {
+    crates = true;
+  };
+}
+
+```
+
 ## Dependencies
 * Neovim 0.5 with lua support
 * nvim-compe
