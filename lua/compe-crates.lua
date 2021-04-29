@@ -133,6 +133,10 @@ Crates.load = function(self)
     self.index = get_items(index_path)
     local serialized = vim.fn.json_encode({ index = self.index, count = self.count})
     local f = io.open(cache_path, "w")
+	if f == nil then
+		uv.fs_mkdir(root, 511, nil)
+		f = io.open(cache_path, "w")
+	end
     f:write(serialized)
     print("Indexed ", self.count, "crates")
     -- print(tprint(self.index))
