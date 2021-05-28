@@ -1,5 +1,9 @@
 if exists('g:loaded_compecrates') | finish | endif
 
+if expand("%:t") != "Cargo.toml"
+	finish
+endif
+
 let s:save_cpo = &cpo
 set cpo&vim
 
