@@ -3,7 +3,8 @@ local uv = vim.loop
 
 local Crates = {
     count = 0,
-    index = {}
+    index = {},
+    prev = 0
 }
 
 local function get_path()
@@ -115,7 +116,7 @@ Crates.load = function(self)
                         self.count = self.count + 1
                         table.insert(current_items, {
                             path = lpath,
-                            word = name .. ' = "' .. res.vers .. '"',
+                            word = name .. ' = { version = "' .. res.vers .. '" }',
                             abbr = name,
                             vers = res.vers,
                         })
@@ -139,7 +140,6 @@ Crates.load = function(self)
 	end
     f:write(serialized)
     print("Indexed ", self.count, "crates")
-    -- print(tprint(self.index))
 end
 
 --- get_metadata
@@ -153,27 +153,36 @@ Crates.get_metadata = function(_)
 end
 
 --- determine
-Crates.determine = function(_, context)
+Crates.determine = function(self, context)
     if vim.fn.expand('%:t') ~= "Cargo.toml" then
         return
     end
-    local res = compe.helper.determine(context, {
-        keyword_pattern = [[^\w*$]],
-    })
-    if res.keyword_pattern_offset ~= 0 then
-       res.trigger_character_offset = #context.before_line
+    if #context.before_line < 4 or (#context.before_line % 2 == 1 and self.prev < #context.before_line) then
+        return
     end
+    if string.match(context.before_line, "^[%w_-]+$") == nil then
+        return
+    end
+    res = {
+        keyword_pattern_offset = 1,
+        trigger_character_offset = #context.before_line - 1
+    }
     return res
 end
 
 --- complete
 Crates.complete = function(self, args)
-    local dirname = args.context.before_line
-    if not dirname or #dirname < 4 then
+    if vim.fn.expand('%:t') ~= "Cargo.toml" then
         return args.abort()
     end
 
-    self:_candidates(dirname, function(err, candidates)
+    local prefix = args.context.before_line
+    if not prefix or #prefix < 4 then
+        return args.abort()
+    end
+
+    self:_candidates(prefix, function(err, candidates)
+        self.prev = #prefix - (#prefix % 2)
         if err then
             return args.abort()
         end
@@ -181,8 +190,11 @@ Crates.complete = function(self, args)
             return self:_compare(item1, item2)
         end)
 
+
         args.callback({
             items = candidates,
+            keyword_pattern_offset = 1,
+            trigger_character_offset = self.prev
         })
     end)
 end
@@ -207,7 +219,9 @@ Crates._candidates = function(self, prefix, callback)
             if type(k) ~= "number" then
                 get_items(v)
             else
-                table.insert(items, v)
+                if v.word:sub(1, #prefix) == prefix then
+                    table.insert(items, v)
+                end
             end
         end
     end
